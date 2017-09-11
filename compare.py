@@ -35,6 +35,16 @@ class DiffUsers(object):
         # a, b are dict, returns list of difference set a\b
         diff = set(a.keys()) - set(b.keys())
         return [a[key] for key in diff]
+        
+    def get_screenname_changed(self): # returns dict
+        changed = dict()
+        for uid in self.get_intersection_keys(self.older, self.newer):
+            if self.older[uid]['screen_name'] != self.newer[uid]['screen_name']:
+                changed[uid] = (self.older[uid]['screen_name'], self.newer[uid]['screen_name'])
+        return changed
+        
+    def get_intersection_keys(self, a, b):
+        return set(a.keys()) & set(b.keys())
 
 def main():
     if len(sys.argv) != 3:
@@ -45,6 +55,7 @@ def main():
     d = DiffUsers(sys.argv[1], sys.argv[2])
     print("New users:", d.get_newbies())
     print("Disappeared:", d.get_disappeared())
+    print("Name Changed:", d.get_screenname_changed())
     
 if __name__ == '__main__':
     main()
